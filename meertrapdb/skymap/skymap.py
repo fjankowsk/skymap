@@ -17,6 +17,8 @@ class Skymap(object):
     A sky exposure map.
     """
 
+    name = 'Skymap'
+
     def __init__(self, nside, unit):
         """
         A sky exposure map.
@@ -29,17 +31,18 @@ class Skymap(object):
             The unit of the map data.
         """
 
-        self._arrangement = 'ring'
-        self._coordinate = 'icrs'
-        self._dtype = np.float32
-        self.log = logging.getLogger('meertrapdb.skymap.skymap')
-        self._nside = nside
-        self._npix = hp.nside2npix(self._nside)
-        self._unit = unit
+        self.__arrangement = 'ring'
+        self.__coordinate = 'icrs'
+        self.__dtype = np.float32
+        self.__exposures = 0
+        self.__log = logging.getLogger('meertrapdb.skymap.skymap')
+        self.__nside = nside
+        self.__npix = hp.nside2npix(self.__nside)
+        self.__unit = unit
 
         # create empty map
-        #self._data = np.full(self._npix, hp.UNSEEN, dtype=self._dtype)
-        self._data = np.zeros(self._npix, dtype=self._dtype)
+        #self.__data = np.full(self.__npix, hp.UNSEEN, dtype=self.__dtype)
+        self.__data = np.zeros(self.__npix, dtype=self.__dtype)
 
     def __repr__(self):
         """
@@ -47,10 +50,11 @@ class Skymap(object):
         """
 
         info_dict = {
-            'coordinate': self._coordinate,
-            'dtype': self._dtype,
-            'nside': self._nside,
-            'unit': self._unit,
+            'coordinate': self.coordinate,
+            'dtype': self.dtype,
+            'nside': self.nside,
+            'unit': self.unit,
+            'exposures': self.exposures,
             'min': self.min,
             'mean': self.mean,
             'max': self.max,
@@ -66,7 +70,7 @@ class Skymap(object):
         String representation of the object.
         """
 
-        info_str = 'Skymap, {0}'.format(repr(self))
+        info_str = '{0}: {1}'.format(self.name, repr(self))
 
         return info_str
 
@@ -89,7 +93,7 @@ class Skymap(object):
             raise RuntimeError('The file does not exist: {0}'.format(filename))
 
         # XXX: check that meta parameters match
-        self._data = np.load(filename)
+        self.__data = np.load(filename)
 
     def save_to_file(self, filename):
         """
@@ -101,7 +105,7 @@ class Skymap(object):
             The name of the file.
         """
 
-        np.save(filename, self._data)
+        np.save(filename, self.data)
 
     def gen_from_database(self):
         """
@@ -129,18 +133,18 @@ class Skymap(object):
             In case of a mismatch between the Skymap objects.
         """
 
-        if self._arrangement == other._arrangement \
-        and self._coordinate == other._coordinate \
-        and self._dtype == other._dtype \
-        and self._nside == other._nside \
-        and self._unit == other._unit:
+        if self.arrangement == other.arrangement \
+        and self.coordinate == other.coordinate \
+        and self.dtype == other.dtype \
+        and self.nside == other.nside \
+        and self.unit == other.unit:
             pass
 
         else:
             raise RuntimeError('The Skymap objects are incompatible.')
 
         total = copy.deepcopy(self)
-        total._data = self._data + other._data
+        total.__data = self.data + other.data
 
         return total
 
@@ -152,12 +156,68 @@ class Skymap(object):
         return self.__add__(other)
 
     @property
+    def arrangement(self):
+        """
+        The HEALPIX pixel arrangement of the sky map.
+        """
+
+        return self.__arrangement
+
+    @property
+    def coordinate(self):
+        """
+        The coordinate frame of the sky map.
+        """
+
+        return self.__coordinate
+
+    @property
+    def data(self):
+        """
+        The sky map data array.
+        """
+
+        return self.__data
+
+    @property
+    def dtype(self):
+        """
+        The data type of the sky map.
+        """
+
+        return self.__dtype
+
+    @property
+    def exposures(self):
+        """
+        The number of exposures added to the sky map.
+        """
+
+        return self.__exposures
+
+    @property
+    def nside(self):
+        """
+        The HEALPIX `nside` parameter.
+        """
+
+        return self.__nside
+
+    @property
+    def unit(self):
+        """
+        The unit of the sky map.
+        """
+
+        return self.__unit
+
+    @property
     def size(self):
         """
         The size of the sky map in GB.
         """
 
-        return self._data.nbytes / 1024**3
+        return self.data.nbytes / 1024**3
 
     @property
     def min(self):
@@ -165,7 +225,7 @@ class Skymap(object):
         The minimum value of the sky map.
         """
 
-        return np.min(self._data)
+        return np.min(self.data)
 
     @property
     def mean(self):
@@ -173,7 +233,7 @@ class Skymap(object):
         The mean value of the sky map.
         """
 
-        return np.mean(self._data)
+        return np.mean(self.data)
 
     @property
     def median(self):
@@ -181,7 +241,7 @@ class Skymap(object):
         The median value of the sky map.
         """
 
-        return np.median(self._data)
+        return np.median(self.data)
 
     @property
     def max(self):
@@ -189,7 +249,7 @@ class Skymap(object):
         The maximum value of the sky map.
         """
 
-        return np.max(self._data)
+        return np.max(self.data)
 
     @property
     def sum(self):
@@ -197,7 +257,7 @@ class Skymap(object):
         The sum of the sky map.
         """
 
-        return np.sum(self._data, dtype=np.float128)
+        return np.sum(self.data, dtype=np.float128)
 
     def add_exposure(self, coords, radii, lengths):
         """
@@ -218,40 +278,38 @@ class Skymap(object):
             ra_rad = item.ra.radian
             dec_rad = 0.5 * np.pi - item.dec.radian
 
-            self.log.info('RA, Dec: {0}, {1}'.format(ra_rad, dec_rad))
+            self.__log.info('RA, Dec: {0}, {1}'.format(ra_rad, dec_rad))
 
             vec = hp.ang2vec(dec_rad, ra_rad)
 
             mask = hp.query_disc(
-                nside=self._nside,
+                nside=self.nside,
                 vec=vec,
                 radius=np.radians(radius)
             )
 
-            self.log.info('Number of HEAL pixels: {0}'.format(len(mask)))
+            self.__log.info('Number of HEAL pixels: {0}'.format(len(mask)))
 
-            self._data[mask] = self._data[mask] + length
+            self.__data[mask] = self.data[mask] + length
+            self.__exposures = self.exposures + 1
 
     def show(self):
         """
+        Visualise the Skymap exposure data.
         """
 
         import matplotlib.pyplot as plt
 
-        hp.mollzoom(
-            self._data,
-            #badcolor='lightgray',
+        hp.mollview(
+            self.data,
             cmap='Reds',
             coord=['C'],
             rot=(0, 0, 0),
             title='',
-            unit=self._unit,
+            unit=self.unit,
             xsize=1600
         )
 
-        #hp.gnomview(m)
-        #hp.cartview(m)
-        #hp.orthview(m)
         hp.graticule()
 
         plt.show()
