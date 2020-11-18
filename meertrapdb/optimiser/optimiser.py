@@ -4,6 +4,7 @@
 #   Optimise sky exposure using various methods.
 #
 
+import copy
 import logging
 
 
@@ -12,15 +13,18 @@ class Optimiser(object):
     A sky exposure optimiser.
     """
 
-    optimisation_methods = ['watershed']
+    name = 'Optimiser'
+
+    # available methods
+    __optimisation_methods = ['watershed']
 
     def __init__(self):
         """
         A sky exposure optimiser.
         """
 
-        self._skymap = None
-        self.log = logging.getLogger('meertrapdb.optimiser.optimiser')
+        self.__skymap = None
+        self.__log = logging.getLogger('meertrapdb.optimiser.optimiser')
 
     def __repr__(self):
         """
@@ -40,7 +44,7 @@ class Optimiser(object):
         String representation of the object.
         """
 
-        info_str = 'Optimiser'
+        info_str = '{0}: {1}'.format(self.name, repr(self))
 
         return info_str
 
@@ -49,8 +53,8 @@ class Optimiser(object):
         Load skymap exposure data.
         """
 
-        self._skymap = skymap
-    
+        self.__skymap = copy.deepcopy(skymap)
+
     def optimise(self, pointing, params, method='watershed'):
         """
         Run the sky exposure optimisation.
@@ -60,7 +64,7 @@ class Optimiser(object):
         pointing: ~astropy.SkyCoord
             The pointing position in equatorial coordinates to optimise for.
         params: dict
-            The sub-array configuration and LST parameters.
+            The sub-array, requested beam and LST parameters.
         method: str
             The optimisation method to use.
 
@@ -70,10 +74,11 @@ class Optimiser(object):
             If the given optimisation `method` is not implemented.
         """
 
-        if method not in self.optimisation_methods:
+        if method not in self.__optimisation_methods:
             raise NotImplementedError('Optimisation method not implemented: {0}'.format(method))
 
-    def get_beam_placement(self):
+    @property
+    def beam_placement(self):
         """
         Retrieve the optimal beam placement after optimisation was run.
 
