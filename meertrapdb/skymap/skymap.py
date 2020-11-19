@@ -6,6 +6,7 @@
 
 import copy
 import logging
+import pickle
 import os.path
 
 import healpy as hp
@@ -76,12 +77,17 @@ class Skymap(object):
 
     def load_from_file(self, filename):
         """
-        Load sky exposure data from file.
+        Load Skymap from file.
 
         Parameters
         ----------
         filename: str
             The name of the file.
+
+        Returns
+        -------
+        loaded: ~Skymap
+            The loaded Skymap object.
 
         Raises
         ------
@@ -92,12 +98,16 @@ class Skymap(object):
         if not os.path.isfile(filename):
             raise RuntimeError('The file does not exist: {0}'.format(filename))
 
-        # XXX: check that meta parameters match
-        self.__data = np.load(filename)
+        with open(filename, 'rb') as fd:
+            loaded = pickle.load(fd)
+
+        self.__log.info('Loaded spectral data from pickle file: {0}'.format(filename))
+
+        return loaded
 
     def save_to_file(self, filename):
         """
-        Save sky exposure data to file.
+        Save Skymap to file.
 
         Parameters
         ----------
@@ -105,13 +115,10 @@ class Skymap(object):
             The name of the file.
         """
 
-        np.save(filename, self.data)
+        with open(filename, 'wb') as fd:
+            pickle.dump(self, fd, protocol=pickle.HIGHEST_PROTOCOL)
 
-    def gen_from_database(self):
-        """
-        Generate the skymap data from the database.
-        """
-        pass
+        self.__log.info('Saved skymap to file: {0}'.format(filename))
 
     def __add__(self, other):
         """
@@ -300,7 +307,7 @@ class Skymap(object):
 
         import matplotlib.pyplot as plt
 
-        hp.mollview(
+        hp.mollzoom(
             self.data,
             cmap='Reds',
             coord=['C'],
