@@ -313,9 +313,11 @@ class Skymap(object):
 
         hp.mollview(
             masked,
+            badcolor='lightgray',
+            bgcolor='white',
             cmap='Reds',
             coord=['C'],
-            norm=LogNorm(),
+            norm=LogNorm(vmin=np.nanmin(masked), vmax=np.nanmax(masked)),
             rot=(0, 0, 0),
             title='',
             unit=self.unit,
@@ -337,9 +339,11 @@ class Skymap(object):
 
         hp.mollzoom(
             masked,
+            badcolor='lightgray',
+            bgcolor='white',
             cmap='Reds',
             coord=['C'],
-            norm=LogNorm(),
+            norm=LogNorm(vmin=np.nanmin(masked), vmax=np.nanmax(masked)),
             rot=(0, 0, 0),
             title='',
             unit=self.unit,
