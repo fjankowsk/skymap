@@ -12,12 +12,15 @@ class Tiling(object):
     A multi-beam tiling.
     """
 
+    name = 'Tiling'
+
     def __init__(self):
         """
         A multi-beam tiling.
         """
 
-        self.log = logging.getLogger('meertrapdb.skymap.tiling')
+        self.__log = logging.getLogger('meertrapdb.skymap.tiling')
+        self.__beams = []
 
     def __repr__(self):
         """
@@ -25,7 +28,7 @@ class Tiling(object):
         """
 
         info_dict = {
-            'tiling': 'XXX'
+            'nbeam': self.nbeam
         }
 
         info_str = '{0}'.format(info_dict)
@@ -37,6 +40,21 @@ class Tiling(object):
         String representation of the object.
         """
 
-        info_str = 'Tiling'
+        info_str = '{0}: {1}'.format(self.name, repr(self))
 
         return info_str
+
+    @property
+    def nbeam(self):
+        """
+        The number of beams in the tiling.
+        """
+
+        return len(self.__beams)
+
+    def show(self):
+        """
+        Display the tiling visually.
+        """
+
+        pass
