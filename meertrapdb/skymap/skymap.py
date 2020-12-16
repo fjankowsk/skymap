@@ -285,7 +285,7 @@ class Skymap(object):
             ra_rad = item.ra.radian
             dec_rad = 0.5 * np.pi - item.dec.radian
 
-            self.__log.info('RA, Dec: {0}, {1}'.format(ra_rad, dec_rad))
+            self.__log.debug('RA, Dec: {0}, {1}'.format(ra_rad, dec_rad))
 
             vec = hp.ang2vec(dec_rad, ra_rad)
 
@@ -295,7 +295,7 @@ class Skymap(object):
                 radius=np.radians(radius)
             )
 
-            self.__log.info('Number of HEAL pixels: {0}'.format(len(mask)))
+            self.__log.debug('Number of HEAL pixels: {0}'.format(len(mask)))
 
             self.__data[mask] = self.data[mask] + length
             self.__exposures = self.exposures + 1
