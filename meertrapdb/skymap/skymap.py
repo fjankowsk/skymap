@@ -10,7 +10,6 @@ import pickle
 import os.path
 
 import healpy as hp
-from matplotlib import cm
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 import numpy as np
@@ -312,7 +311,7 @@ class Skymap(object):
         masked = np.copy(self.data)
         masked[masked < 0.01] = np.nan
 
-        cmap = cm.get_cmap('Reds')
+        cmap = plt.get_cmap('Reds')
         cmap.set_under('white')
 
         hp.mollview(
@@ -343,7 +342,6 @@ class Skymap(object):
 
         hp.mollzoom(
             masked,
-            bgcolor='white',
             cmap='Reds',
             coord=['C'],
             norm=LogNorm(vmin=np.nanmin(masked), vmax=np.nanmax(masked)),
