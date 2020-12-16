@@ -10,6 +10,8 @@ import pickle
 import os.path
 
 import healpy as hp
+import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
 import numpy as np
 
 
@@ -305,16 +307,43 @@ class Skymap(object):
         Visualise the Skymap exposure data.
         """
 
-        import matplotlib.pyplot as plt
+        # mask all empty areas
+        masked = np.copy(self.data)
+        masked[masked < 0.01] = np.nan
 
-        hp.mollzoom(
-            self.data,
+        hp.mollview(
+            masked,
             cmap='Reds',
             coord=['C'],
+            norm=LogNorm(),
             rot=(0, 0, 0),
             title='',
             unit=self.unit,
-            xsize=1600
+            xsize=3200
+        )
+
+        hp.graticule()
+
+        plt.show()
+
+    def show_interactive(self):
+        """
+        Interactively visualise the Skymap exposure data.
+        """
+
+        # mask all empty areas
+        masked = np.copy(self.data)
+        masked[masked < 0.01] = np.nan
+
+        hp.mollzoom(
+            masked,
+            cmap='Reds',
+            coord=['C'],
+            norm=LogNorm(),
+            rot=(0, 0, 0),
+            title='',
+            unit=self.unit,
+            xsize=3200
         )
 
         hp.graticule()
