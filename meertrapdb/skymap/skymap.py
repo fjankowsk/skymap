@@ -331,12 +331,15 @@ class Skymap(object):
         cmap = copy.copy(plt.get_cmap('Reds'))
         cmap.set_under('white')
 
+        fig = plt.figure(num=123)
+
         hp.mollview(
             masked,
             badcolor='lightgray',
             bgcolor='white',
             cmap=cmap,
             coord=coord,
+            fig=fig.number,
             norm=LogNorm(vmin=np.nanmin(masked), vmax=np.nanmax(masked)),
             rot=(0, 0, 0),
             title='',
@@ -345,6 +348,12 @@ class Skymap(object):
         )
 
         hp.graticule()
+
+        fig.savefig(
+            'skymap.png',
+            bbox_inches='tight',
+            dpi=300
+        )
 
         plt.show()
 
