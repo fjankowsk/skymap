@@ -335,7 +335,7 @@ class Skymap(object):
 
         hp.mollview(
             masked,
-            badcolor='lightgray',
+            badcolor='white',
             bgcolor='white',
             cmap=cmap,
             coord=coord,
@@ -344,7 +344,7 @@ class Skymap(object):
             rot=(0, 0, 0),
             title='',
             unit=self.unit,
-            xsize=3200
+            xsize=6400
         )
 
         hp.graticule()
@@ -370,7 +370,7 @@ class Skymap(object):
             rot=(0, 0, 0),
             title='',
             unit=self.unit,
-            xsize=3200
+            xsize=6400
         )
 
         hp.graticule()
