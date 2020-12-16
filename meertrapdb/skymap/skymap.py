@@ -302,16 +302,33 @@ class Skymap(object):
             self.__data[mask] = self.data[mask] + length
             self.__exposures = self.exposures + 1
 
-    def show(self):
+    def show(self, coordinates='equatorial'):
         """
         Visualise the Skymap exposure data.
+
+        Parameters
+        ----------
+        coordinates: str (default: equatorial)
+            The coordinate system to use (equatorial, galactic).
+
+        Raises
+        ------
+        NotImplementedError
+            In case the `coordinates` coordinate system is not implemented.
         """
+
+        if coordinates == 'equatorial':
+            coord = ['C']
+        elif coordinates == 'galactic':
+            coord = ['C', 'G']
+        else:
+            raise NotImplementedError('Coordinate system is not available.')
 
         # mask all empty areas
         masked = np.copy(self.data)
         masked[masked < 0.01] = np.nan
 
-        cmap = plt.get_cmap('Reds')
+        cmap = copy.copy(plt.get_cmap('Reds'))
         cmap.set_under('white')
 
         hp.mollview(
@@ -319,7 +336,7 @@ class Skymap(object):
             badcolor='lightgray',
             bgcolor='white',
             cmap=cmap,
-            coord=['C'],
+            coord=coord,
             norm=LogNorm(vmin=np.nanmin(masked), vmax=np.nanmax(masked)),
             rot=(0, 0, 0),
             title='',
@@ -336,15 +353,11 @@ class Skymap(object):
         Interactively visualise the Skymap exposure data.
         """
 
-        # mask all empty areas
-        masked = np.copy(self.data)
-        masked[masked < 0.01] = np.nan
-
         hp.mollzoom(
-            masked,
+            self.data,
             cmap='Reds',
             coord=['C'],
-            norm=LogNorm(vmin=np.nanmin(masked), vmax=np.nanmax(masked)),
+            norm=LogNorm(),
             rot=(0, 0, 0),
             title='',
             unit=self.unit,
