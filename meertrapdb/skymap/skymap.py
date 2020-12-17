@@ -4,6 +4,7 @@
 #   A sky exposure map.
 #
 
+import bz2
 import copy
 import logging
 import pickle
@@ -100,7 +101,7 @@ class Skymap(object):
         if not os.path.isfile(filename):
             raise RuntimeError('The file does not exist: {0}'.format(filename))
 
-        with open(filename, 'rb') as fd:
+        with bz2.open(filename, 'rb') as fd:
             loaded = pickle.load(fd)
 
         self.__log.info('Loaded spectral data from pickle file: {0}'.format(filename))
@@ -117,7 +118,7 @@ class Skymap(object):
             The name of the file.
         """
 
-        with open(filename, 'wb') as fd:
+        with bz2.open(filename, 'wb') as fd:
             pickle.dump(self, fd, protocol=pickle.HIGHEST_PROTOCOL)
 
         self.__log.info('Saved skymap to file: {0}'.format(filename))
