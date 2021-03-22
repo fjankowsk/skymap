@@ -10,10 +10,17 @@ import logging
 import pickle
 import os.path
 
+from astropy import units
+from astropy.coordinates import SkyCoord
 import healpy as hp
+from healpy.visufunc import projscatter
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 import numpy as np
+
+# astropy.units generates members dynamically, pylint therefore fails
+# disable the corresponding pylint test for now
+# pylint: disable=E1101
 
 
 class Skymap(object):
@@ -303,14 +310,16 @@ class Skymap(object):
             self.__data[mask] = self.data[mask] + length
             self.__exposures = self.exposures + 1
 
-    def show(self, coordinates='equatorial'):
+    def show(self, coordinates='equatorial', sources=None):
         """
-        Visualise the Skymap exposure data.
+        Visualise the Skymap exposure data and sources.
 
         Parameters
         ----------
         coordinates: str (default: equatorial)
             The coordinate system to use (equatorial, galactic).
+        sources: pandas.DataFrame
+            Source positions to overplot (default: None).
 
         Raises
         ------
@@ -332,7 +341,7 @@ class Skymap(object):
         cmap = copy.copy(plt.get_cmap('Reds'))
         cmap.set_under('white')
 
-        fig = plt.figure(num=123)
+        fig = plt.figure()
 
         hp.mollview(
             masked,
@@ -350,8 +359,41 @@ class Skymap(object):
 
         hp.graticule()
 
+        # highlight sources
+        if sources is not None:
+            types = np.unique(sources['type'])
+            colors = ['tab:olive', 'tab:blue', 'tab:red', 'tab:green']
+
+            for i, item in enumerate(types):
+                mask = (sources['type'] == item)
+                sel = sources[mask]
+
+                coords = SkyCoord(
+                    ra=sel['ra'],
+                    dec=sel['dec'],
+                    unit=(units.hourangle, units.deg),
+                    frame='icrs'
+                )
+
+                color = colors[i % len(colors)]
+
+                # no need to convert the coordinates manually
+                # healpy does that for us automatically
+                projscatter(
+                    coords.ra.deg,
+                    coords.dec.deg,
+                    lonlat=True,
+                    coord='C',
+                    marker='*',
+                    facecolor=color,
+                    edgecolor='black',
+                    lw=0.5,
+                    s=50,
+                    zorder=5
+                )
+
         fig.savefig(
-            'skymap.png',
+            'skymap_{0}.png'.format(coordinates),
             bbox_inches='tight',
             dpi=300
         )
