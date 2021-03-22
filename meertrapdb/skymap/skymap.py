@@ -276,11 +276,11 @@ class Skymap(object):
         Parameters
         ----------
         coords: ~astropy.SkyCoord
-            The centre of the beam.
+            The centres of the beams.
         radii: ~np.array of float
-            The radius of the beam in degrees.
+            The radii of the beams in degrees.
         lengths: ~np.array of float
-            The exposure length in `unit`.
+            The exposure lengths in `unit`.
         """
 
         for item, radius, length in zip(coords, radii, lengths):
@@ -356,7 +356,7 @@ class Skymap(object):
             dpi=300
         )
 
-        plt.show()
+        plt.draw()
 
     def show_interactive(self):
         """
