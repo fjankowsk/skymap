@@ -126,7 +126,7 @@ class Skymap(object):
         """
 
         with bz2.open(filename, 'wb') as fd:
-            pickle.dump(self, fd, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(self, fd, protocol=pickle.DEFAULT_PROTOCOL)
 
         self.__log.info('Saved skymap to file: {0}'.format(filename))
 
