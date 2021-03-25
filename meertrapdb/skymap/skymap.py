@@ -379,8 +379,10 @@ class Skymap(object):
 
         if coordinates == 'equatorial':
             coord = ['C']
+            rot = (180.0, 0, 0)
         elif coordinates == 'galactic':
             coord = ['C', 'G']
+            rot = (0, 0, 0)
         else:
             raise NotImplementedError('Coordinate system is not available.')
 
@@ -401,13 +403,67 @@ class Skymap(object):
             coord=coord,
             fig=fig.number,
             norm=LogNorm(vmin=np.nanmin(masked), vmax=np.nanmax(masked)),
-            rot=(0, 0, 0),
+            rot=rot,
             title='',
             unit=self.unit,
             xsize=6400
         )
 
         hp.graticule()
+
+        # add markers
+        if coordinates == 'equatorial':
+            ras = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
+
+            coords = SkyCoord(
+                ra=ras,
+                dec=[5 for _ in range(len(ras))],
+                unit=(units.hourangle, units.deg),
+                frame='icrs'
+            )
+
+            for i in range(len(coords)):
+                projtext(
+                    coords[i].ra.deg,
+                    coords[i].dec.deg,
+                    s='{0} h'.format(ras[i]),
+                    lonlat=True,
+                    coord='C',
+                    clip_on=True,
+                    color='black',
+                    fontfamily='serif',
+                    fontsize='medium',
+                    horizontalalignment='center',
+                    verticalalignment='center',
+                    snap=True,
+                    zorder=3
+                )
+
+            decs = [-60, -30, 30, 60]
+
+            coords = SkyCoord(
+                ra=[5.5 for _ in range(len(decs))],
+                dec=decs,
+                unit=(units.hourangle, units.deg),
+                frame='icrs'
+            )
+
+            for i in range(len(coords)):
+                projtext(
+                    coords[i].ra.deg,
+                    coords[i].dec.deg,
+                    s=r'{0:+}$\degree$'.format(decs[i]),
+                    lonlat=True,
+                    coord='C',
+                    clip_on=True,
+                    color='black',
+                    fontfamily='serif',
+                    fontsize='medium',
+                    horizontalalignment='left',
+                    verticalalignment='bottom',
+                    snap=True,
+                    zorder=3
+                )
 
         # highlight sources
         if sources is not None:
