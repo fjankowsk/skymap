@@ -13,7 +13,7 @@ import os.path
 from astropy import units
 from astropy.coordinates import SkyCoord
 import healpy as hp
-from healpy.visufunc import projscatter
+from healpy.visufunc import (projscatter, projtext)
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 import numpy as np
@@ -310,7 +310,7 @@ class Skymap(object):
             self.__data[mask] = self.data[mask] + length
             self.__exposures = self.exposures + 1
 
-    def show(self, coordinates='equatorial', sources=None):
+    def show(self, coordinates='equatorial', sources=None, shownames=False):
         """
         Visualise the Skymap exposure data and sources.
 
@@ -320,6 +320,8 @@ class Skymap(object):
             The coordinate system to use (equatorial, galactic).
         sources: pandas.DataFrame
             Source positions to overplot (default: None).
+        shownames: bool (default: False)
+            Whether to show the names of the sources on the sky map.
 
         Raises
         ------
@@ -391,6 +393,25 @@ class Skymap(object):
                     s=50,
                     zorder=5
                 )
+
+                # show the source names
+                if shownames:
+                    for i in range(len(sel)):
+                        projtext(
+                            coords[i].ra.deg,
+                            coords[i].dec.deg,
+                            s=sel['name'].iloc[i],
+                            lonlat=True,
+                            coord='C',
+                            clip_on=True,
+                            color='black',
+                            fontfamily='sans-serif',
+                            fontsize='xx-small',
+                            horizontalalignment='left',
+                            verticalalignment='bottom',
+                            snap=True,
+                            zorder=6
+                        )
 
         fig.savefig(
             'skymap_{0}.png'.format(coordinates),
