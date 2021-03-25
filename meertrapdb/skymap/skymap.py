@@ -310,6 +310,54 @@ class Skymap(object):
             self.__data[mask] = self.data[mask] + length
             self.__exposures = self.exposures + 1
 
+    def query(self, coords, radii):
+        """
+        Query the exposure for given coordinates.
+
+        Parameters
+        ----------
+        coords: ~astropy.SkyCoord
+            The centres of the beams.
+        radii: ~np.array of float
+            The radii of the beams in degrees.
+
+        Returns
+        -------
+        exposures: list of float
+            The exposures in units of the sky map.
+        """
+
+        exposures = []
+
+        for item, radius in zip(coords, radii):
+            # theta [0, 2*pi], phi [0, pi]
+            ra_rad = item.ra.radian
+            dec_rad = 0.5 * np.pi - item.dec.radian
+
+            self.__log.debug('RA, Dec: {0}, {1}'.format(ra_rad, dec_rad))
+
+            vec = hp.ang2vec(dec_rad, ra_rad)
+
+            mask = hp.query_disc(
+                nside=self.nside,
+                vec=vec,
+                radius=np.radians(radius)
+            )
+
+            self.__log.debug('Number of HEAL pixels: {0}'.format(len(mask)))
+
+            sel = np.copy(self.data[mask])
+            sel = sel[sel > 0]
+
+            if len(sel) > 0:
+                exposure = np.median(sel)
+            else:
+                exposure = np.nan
+
+            exposures.append(exposure)
+
+        return exposures
+
     def show(self, coordinates='equatorial', sources=None, shownames=False):
         """
         Visualise the Skymap exposure data and sources.
