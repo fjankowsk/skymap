@@ -468,7 +468,7 @@ class Skymap(object):
         # highlight sources
         if sources is not None:
             types = np.unique(sources['type'])
-            colors = ['tab:olive', 'tab:blue', 'tab:red', 'tab:green']
+            colors = ['tab:olive', 'tab:blue', 'tab:purple', 'tab:green']
 
             for i, item in enumerate(types):
                 mask = (sources['type'] == item)
