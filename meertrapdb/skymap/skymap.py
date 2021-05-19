@@ -90,7 +90,8 @@ class Skymap(object):
 
         return info_str
 
-    def load_from_file(self, filename):
+    @classmethod
+    def load_from_file(cls, filename):
         """
         Load Skymap from file.
 
@@ -115,8 +116,6 @@ class Skymap(object):
 
         with bz2.open(filename, 'rb') as fd:
             loaded = pickle.load(fd)
-
-        self.__log.info('Loaded spectral data from pickle file: {0}'.format(filename))
 
         return loaded
 
