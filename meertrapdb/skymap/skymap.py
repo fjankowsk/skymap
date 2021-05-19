@@ -31,7 +31,7 @@ class Skymap(object):
 
     name = 'Skymap'
 
-    def __init__(self, nside, unit):
+    def __init__(self, nside, quantity, unit):
         """
         A sky exposure map.
 
@@ -39,8 +39,10 @@ class Skymap(object):
         ----------
         nside: int
             The HEALPIX `nside` parameter for the map.
+        quantity: str
+            The name of the quantity that is stored in the map (e.g. 'time').
         unit: str
-            The unit of the map data.
+            The unit of the map data (e.g. 'min').
         """
 
         self.__arrangement = 'ring'
@@ -50,6 +52,7 @@ class Skymap(object):
         self.__log = logging.getLogger('meertrapdb.skymap.skymap')
         self.__nside = nside
         self.__npix = hp.nside2npix(self.__nside)
+        self.__quantity = quantity
         self.__unit = unit
 
         # create empty map
@@ -65,6 +68,7 @@ class Skymap(object):
             'coordinate': self.coordinate,
             'dtype': self.dtype,
             'nside': self.nside,
+            'quantity': self.quantity,
             'unit': self.unit,
             'exposures': self.exposures,
             'min': self.min,
@@ -167,8 +171,7 @@ class Skymap(object):
             m=self.data,
             nest=nest,
             coord=coord,
-            # XXX: change this later
-            column_names=['exposure'],
+            column_names=[self.quantity],
             column_units=[self.unit],
             extra_header=extra_header,
             dtype=self.dtype
@@ -200,6 +203,7 @@ class Skymap(object):
         and self.coordinate == other.coordinate \
         and self.dtype == other.dtype \
         and self.nside == other.nside \
+        and self.quantity == other.quantity \
         and self.unit == other.unit:
             pass
 
@@ -265,6 +269,14 @@ class Skymap(object):
         """
 
         return self.__nside
+
+    @property
+    def quantity(self):
+        """
+        The quantity stored in the sky map.
+        """
+
+        return self.__quantity
 
     @property
     def unit(self):
