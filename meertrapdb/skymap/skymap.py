@@ -12,6 +12,7 @@ import os.path
 
 from astropy import units
 from astropy.coordinates import SkyCoord
+from astropy.time import Time
 import healpy as hp
 from healpy.visufunc import (projscatter, projtext)
 import matplotlib.pyplot as plt
@@ -129,6 +130,51 @@ class Skymap(object):
             pickle.dump(self, fd, protocol=pickle.DEFAULT_PROTOCOL)
 
         self.__log.info('Saved skymap to file: {0}'.format(filename))
+
+    def save_to_fits(self, filename):
+        """
+        Save Skymap to a FITS file.
+
+        Parameters
+        ----------
+        filename: str
+            The name of the file.
+
+        Raises
+        ------
+        NotImplementedError if the coordinate system is unknown.
+        """
+
+        if self.arrangement == 'nest':
+            nest = True
+        else:
+            nest = False
+
+        if self.coordinate == 'icrs':
+            coord = 'C'
+        elif self.coordinate == 'galactic':
+            coord = 'G'
+        else:
+            raise NotImplementedError('Coordinate system unknown: {0}'.format(self.coordinate))
+
+        extra_header = [
+            ('COMMENT', 'Generated using Skymap'),
+            ('COMMENT', 'Created on {0}'.format(Time.now().iso))
+        ]
+
+        hp.write_map(
+            filename=filename,
+            m=self.data,
+            nest=nest,
+            coord=coord,
+            # XXX: change this later
+            column_names=['exposure'],
+            column_units=[self.unit],
+            extra_header=extra_header,
+            dtype=self.dtype
+        )
+
+        self.__log.info('Saved skymap to FITS file: {0}'.format(filename))
 
     def __add__(self, other):
         """
