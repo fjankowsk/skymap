@@ -46,6 +46,7 @@ class Skymap(object):
         """
 
         self.__arrangement = 'ring'
+        self.__comments = []
         self.__coordinate = 'icrs'
         self.__dtype = np.float32
         self.__exposures = 0
@@ -165,6 +166,11 @@ class Skymap(object):
             ('COMMENT', 'Created on {0}'.format(Time.now().iso))
         ]
 
+        for item in self.comments:
+            extra_header.append(
+                ('COMMENT', item)
+            )
+
         hp.write_map(
             filename=filename,
             m=self.data,
@@ -228,6 +234,26 @@ class Skymap(object):
         """
 
         return self.__arrangement
+
+    @property
+    def comments(self):
+        """
+        The comments on the sky map.
+        """
+
+        return self.__comments
+
+    def add_comment(self, comment):
+        """
+        Add a comment to the sky map.
+
+        Parameters
+        ----------
+        comment: str
+            The comment to add to the sky map.
+        """
+
+        self.__comments.append(comment)
 
     @property
     def coordinate(self):
