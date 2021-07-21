@@ -525,7 +525,7 @@ class Skymap(object):
             decs = [-60, -30, 30, 60]
 
             coords = SkyCoord(
-                ra=[5.5 for _ in range(len(decs))],
+                ra=[5.0 for _ in range(len(decs))],
                 dec=decs,
                 unit=(units.hourangle, units.deg),
                 frame='icrs'
@@ -535,14 +535,66 @@ class Skymap(object):
                 projtext(
                     coords[i].ra.deg,
                     coords[i].dec.deg,
-                    s=r'{0:+}$\degree$'.format(decs[i]),
+                    s=r'${0:+}\degree$'.format(decs[i]),
                     lonlat=True,
                     coord='C',
                     clip_on=True,
                     color='black',
                     fontfamily='serif',
                     fontsize='medium',
-                    horizontalalignment='left',
+                    horizontalalignment='center',
+                    verticalalignment='bottom',
+                    snap=True,
+                    zorder=3
+                )
+        elif coordinates == 'galactic':
+            gl = [30, 60, 90, 120, 150, 210, 240, 270, 300, 330]
+
+            coords = SkyCoord(
+                l=gl,
+                b=[15.0 for _ in range(len(gl))],
+                unit=(units.deg, units.deg),
+                frame='galactic'
+            )
+
+            for i in range(len(coords)):
+                projtext(
+                    coords[i].l.deg,
+                    coords[i].b.deg,
+                    s=r'${0}\degree$'.format(gl[i]),
+                    lonlat=True,
+                    coord='G',
+                    clip_on=True,
+                    color='black',
+                    fontfamily='serif',
+                    fontsize='medium',
+                    horizontalalignment='center',
+                    verticalalignment='center',
+                    snap=True,
+                    zorder=3
+                )
+
+            gb = [-60, -30, 30, 60]
+
+            coords = SkyCoord(
+                l=[105.0 for _ in range(len(gb))],
+                b=gb,
+                unit=(units.deg, units.deg),
+                frame='galactic'
+            )
+
+            for i in range(len(coords)):
+                projtext(
+                    coords[i].l.deg,
+                    coords[i].b.deg,
+                    s=r'${0:+}\degree$'.format(gb[i]),
+                    lonlat=True,
+                    coord='G',
+                    clip_on=True,
+                    color='black',
+                    fontfamily='serif',
+                    fontsize='medium',
+                    horizontalalignment='center',
                     verticalalignment='bottom',
                     snap=True,
                     zorder=3
@@ -602,6 +654,12 @@ class Skymap(object):
 
         fig.savefig(
             'skymap_{0}.png'.format(coordinates),
+            bbox_inches='tight',
+            dpi=300
+        )
+
+        fig.savefig(
+            'skymap_{0}.pdf'.format(coordinates),
             bbox_inches='tight',
             dpi=300
         )
