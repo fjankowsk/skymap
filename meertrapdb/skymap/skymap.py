@@ -359,6 +359,17 @@ class Skymap(object):
 
         return np.sum(self.data, dtype=np.float128)
 
+    @property
+    def fraction_covered(self):
+        """
+        The fraction of the map covered with at least one exposure.
+        """
+
+        mask = (self.data > 0)
+        coverage = len(self.data[mask]) / float(len(self.data))
+
+        return coverage
+
     def add_exposure(self, coords, radii, lengths):
         """
         Add exposure to the sky map.
