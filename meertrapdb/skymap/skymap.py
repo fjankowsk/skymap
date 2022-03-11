@@ -500,7 +500,7 @@ class Skymap(object):
 
         # add markers
         if coordinates == "equatorial":
-            ras = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
+            ras = [4, 8, 12, 16, 20]
 
             coords = SkyCoord(
                 ra=ras,
@@ -519,7 +519,7 @@ class Skymap(object):
                     clip_on=True,
                     color="black",
                     fontfamily="serif",
-                    fontsize="medium",
+                    fontsize="small",
                     horizontalalignment="center",
                     verticalalignment="center",
                     snap=True,
@@ -545,14 +545,14 @@ class Skymap(object):
                     clip_on=True,
                     color="black",
                     fontfamily="serif",
-                    fontsize="medium",
+                    fontsize="small",
                     horizontalalignment="center",
                     verticalalignment="bottom",
                     snap=True,
                     zorder=3,
                 )
         elif coordinates == "galactic":
-            gl = [30, 60, 90, 120, 150, 210, 240, 270, 300, 330]
+            gl = [30, 90, 150, 210, 270, 330]
 
             coords = SkyCoord(
                 l=gl,
@@ -571,7 +571,7 @@ class Skymap(object):
                     clip_on=True,
                     color="black",
                     fontfamily="serif",
-                    fontsize="medium",
+                    fontsize="small",
                     horizontalalignment="center",
                     verticalalignment="center",
                     snap=True,
@@ -597,7 +597,7 @@ class Skymap(object):
                     clip_on=True,
                     color="black",
                     fontfamily="serif",
-                    fontsize="medium",
+                    fontsize="small",
                     horizontalalignment="center",
                     verticalalignment="bottom",
                     snap=True,
