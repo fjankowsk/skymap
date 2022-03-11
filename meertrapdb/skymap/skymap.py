@@ -14,7 +14,7 @@ from astropy import units
 from astropy.coordinates import SkyCoord
 from astropy.time import Time
 import healpy as hp
-from healpy.visufunc import (projscatter, projtext)
+from healpy.visufunc import projscatter, projtext
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 import numpy as np
@@ -29,7 +29,7 @@ class Skymap(object):
     A sky exposure map.
     """
 
-    name = 'Skymap'
+    name = "Skymap"
 
     def __init__(self, nside, quantity, unit):
         """
@@ -45,19 +45,19 @@ class Skymap(object):
             The unit of the map data (e.g. 'min').
         """
 
-        self.__arrangement = 'ring'
+        self.__arrangement = "ring"
         self.__comments = []
-        self.__coordinate = 'icrs'
+        self.__coordinate = "icrs"
         self.__dtype = np.float32
         self.__exposures = 0
-        self.__log = logging.getLogger('meertrapdb.skymap.skymap')
+        self.__log = logging.getLogger("meertrapdb.skymap.skymap")
         self.__nside = nside
         self.__npix = hp.nside2npix(self.__nside)
         self.__quantity = quantity
         self.__unit = unit
 
         # create empty map
-        #self.__data = np.full(self.__npix, hp.UNSEEN, dtype=self.__dtype)
+        # self.__data = np.full(self.__npix, hp.UNSEEN, dtype=self.__dtype)
         self.__data = np.zeros(self.__npix, dtype=self.__dtype)
 
     def __repr__(self):
@@ -66,19 +66,19 @@ class Skymap(object):
         """
 
         info_dict = {
-            'coordinate': self.coordinate,
-            'dtype': self.dtype,
-            'nside': self.nside,
-            'quantity': self.quantity,
-            'unit': self.unit,
-            'exposures': self.exposures,
-            'min': self.min,
-            'mean': self.mean,
-            'max': self.max,
-            'sum': self.sum
+            "coordinate": self.coordinate,
+            "dtype": self.dtype,
+            "nside": self.nside,
+            "quantity": self.quantity,
+            "unit": self.unit,
+            "exposures": self.exposures,
+            "min": self.min,
+            "mean": self.mean,
+            "max": self.max,
+            "sum": self.sum,
         }
 
-        info_str = '{0}'.format(info_dict)
+        info_str = "{0}".format(info_dict)
 
         return info_str
 
@@ -87,7 +87,7 @@ class Skymap(object):
         String representation of the object.
         """
 
-        info_str = '{0}: {1}'.format(self.name, repr(self))
+        info_str = "{0}: {1}".format(self.name, repr(self))
 
         return info_str
 
@@ -113,9 +113,9 @@ class Skymap(object):
         """
 
         if not os.path.isfile(filename):
-            raise RuntimeError('The file does not exist: {0}'.format(filename))
+            raise RuntimeError("The file does not exist: {0}".format(filename))
 
-        with bz2.open(filename, 'rb') as fd:
+        with bz2.open(filename, "rb") as fd:
             loaded = pickle.load(fd)
 
         return loaded
@@ -130,10 +130,10 @@ class Skymap(object):
             The name of the file.
         """
 
-        with bz2.open(filename, 'wb') as fd:
+        with bz2.open(filename, "wb") as fd:
             pickle.dump(self, fd, protocol=pickle.DEFAULT_PROTOCOL)
 
-        self.__log.info('Saved skymap to file: {0}'.format(filename))
+        self.__log.info("Saved skymap to file: {0}".format(filename))
 
     def save_to_fits(self, filename):
         """
@@ -149,27 +149,27 @@ class Skymap(object):
         NotImplementedError if the coordinate system is unknown.
         """
 
-        if self.arrangement == 'nest':
+        if self.arrangement == "nest":
             nest = True
         else:
             nest = False
 
-        if self.coordinate == 'icrs':
-            coord = 'C'
-        elif self.coordinate == 'galactic':
-            coord = 'G'
+        if self.coordinate == "icrs":
+            coord = "C"
+        elif self.coordinate == "galactic":
+            coord = "G"
         else:
-            raise NotImplementedError('Coordinate system unknown: {0}'.format(self.coordinate))
+            raise NotImplementedError(
+                "Coordinate system unknown: {0}".format(self.coordinate)
+            )
 
         extra_header = [
-            ('COMMENT', 'Generated using Skymap'),
-            ('COMMENT', 'Created on {0}'.format(Time.now().iso))
+            ("COMMENT", "Generated using Skymap"),
+            ("COMMENT", "Created on {0}".format(Time.now().iso)),
         ]
 
         for item in self.comments:
-            extra_header.append(
-                ('COMMENT', item)
-            )
+            extra_header.append(("COMMENT", item))
 
         hp.write_map(
             filename=filename,
@@ -179,10 +179,10 @@ class Skymap(object):
             column_names=[self.quantity],
             column_units=[self.unit],
             extra_header=extra_header,
-            dtype=self.dtype
+            dtype=self.dtype,
         )
 
-        self.__log.info('Saved skymap to FITS file: {0}'.format(filename))
+        self.__log.info("Saved skymap to FITS file: {0}".format(filename))
 
     def __add__(self, other):
         """
@@ -204,16 +204,18 @@ class Skymap(object):
             In case of a mismatch between the Skymap objects.
         """
 
-        if self.arrangement == other.arrangement \
-        and self.coordinate == other.coordinate \
-        and self.dtype == other.dtype \
-        and self.nside == other.nside \
-        and self.quantity == other.quantity \
-        and self.unit == other.unit:
+        if (
+            self.arrangement == other.arrangement
+            and self.coordinate == other.coordinate
+            and self.dtype == other.dtype
+            and self.nside == other.nside
+            and self.quantity == other.quantity
+            and self.unit == other.unit
+        ):
             pass
 
         else:
-            raise RuntimeError('The Skymap objects are incompatible.')
+            raise RuntimeError("The Skymap objects are incompatible.")
 
         total = copy.deepcopy(self)
         total.__data = self.data + other.data
@@ -365,7 +367,7 @@ class Skymap(object):
         The fraction of the map covered with at least one exposure.
         """
 
-        mask = (self.data > 0)
+        mask = self.data > 0
         coverage = len(self.data[mask]) / float(len(self.data))
 
         return coverage
@@ -389,17 +391,13 @@ class Skymap(object):
             ra_rad = item.ra.radian
             dec_rad = 0.5 * np.pi - item.dec.radian
 
-            self.__log.debug('RA, Dec: {0}, {1}'.format(ra_rad, dec_rad))
+            self.__log.debug("RA, Dec: {0}, {1}".format(ra_rad, dec_rad))
 
             vec = hp.ang2vec(dec_rad, ra_rad)
 
-            mask = hp.query_disc(
-                nside=self.nside,
-                vec=vec,
-                radius=np.radians(radius)
-            )
+            mask = hp.query_disc(nside=self.nside, vec=vec, radius=np.radians(radius))
 
-            self.__log.debug('Number of HEAL pixels: {0}'.format(len(mask)))
+            self.__log.debug("Number of HEAL pixels: {0}".format(len(mask)))
 
             self.__data[mask] = self.data[mask] + length
             self.__exposures = self.exposures + 1
@@ -428,17 +426,13 @@ class Skymap(object):
             ra_rad = item.ra.radian
             dec_rad = 0.5 * np.pi - item.dec.radian
 
-            self.__log.debug('RA, Dec: {0}, {1}'.format(ra_rad, dec_rad))
+            self.__log.debug("RA, Dec: {0}, {1}".format(ra_rad, dec_rad))
 
             vec = hp.ang2vec(dec_rad, ra_rad)
 
-            mask = hp.query_disc(
-                nside=self.nside,
-                vec=vec,
-                radius=np.radians(radius)
-            )
+            mask = hp.query_disc(nside=self.nside, vec=vec, radius=np.radians(radius))
 
-            self.__log.debug('Number of HEAL pixels: {0}'.format(len(mask)))
+            self.__log.debug("Number of HEAL pixels: {0}".format(len(mask)))
 
             sel = np.copy(self.data[mask])
             sel = sel[sel > 0]
@@ -452,7 +446,7 @@ class Skymap(object):
 
         return exposures
 
-    def show(self, coordinates='equatorial', sources=None, shownames=False):
+    def show(self, coordinates="equatorial", sources=None, shownames=False):
         """
         Visualise the Skymap exposure data and sources.
 
@@ -471,66 +465,66 @@ class Skymap(object):
             In case the `coordinates` coordinate system is not implemented.
         """
 
-        if coordinates == 'equatorial':
-            coord = ['C']
+        if coordinates == "equatorial":
+            coord = ["C"]
             rot = (180.0, 0, 0)
-        elif coordinates == 'galactic':
-            coord = ['C', 'G']
+        elif coordinates == "galactic":
+            coord = ["C", "G"]
             rot = (0, 0, 0)
         else:
-            raise NotImplementedError('Coordinate system is not available.')
+            raise NotImplementedError("Coordinate system is not available.")
 
         # mask all empty areas
         masked = np.copy(self.data)
         masked[masked < 0.01] = np.nan
 
-        cmap = copy.copy(plt.get_cmap('Reds'))
-        cmap.set_under('white')
+        cmap = copy.copy(plt.get_cmap("Reds"))
+        cmap.set_under("white")
 
         fig = plt.figure()
 
         hp.mollview(
             masked,
-            badcolor='white',
-            bgcolor='white',
+            badcolor="white",
+            bgcolor="white",
             cmap=cmap,
             coord=coord,
             fig=fig.number,
             norm=LogNorm(vmin=np.nanmin(masked), vmax=np.nanmax(masked)),
             rot=rot,
-            title='',
+            title="",
             unit=self.unit,
-            xsize=6400
+            xsize=6400,
         )
 
         hp.graticule()
 
         # add markers
-        if coordinates == 'equatorial':
+        if coordinates == "equatorial":
             ras = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
 
             coords = SkyCoord(
                 ra=ras,
                 dec=[5 for _ in range(len(ras))],
                 unit=(units.hourangle, units.deg),
-                frame='icrs'
+                frame="icrs",
             )
 
             for i in range(len(coords)):
                 projtext(
                     coords[i].ra.deg,
                     coords[i].dec.deg,
-                    s='{0} h'.format(ras[i]),
+                    s="{0} h".format(ras[i]),
                     lonlat=True,
-                    coord='C',
+                    coord="C",
                     clip_on=True,
-                    color='black',
-                    fontfamily='serif',
-                    fontsize='medium',
-                    horizontalalignment='center',
-                    verticalalignment='center',
+                    color="black",
+                    fontfamily="serif",
+                    fontsize="medium",
+                    horizontalalignment="center",
+                    verticalalignment="center",
                     snap=True,
-                    zorder=3
+                    zorder=3,
                 )
 
             decs = [-60, -30, 30, 60]
@@ -539,50 +533,50 @@ class Skymap(object):
                 ra=[5.0 for _ in range(len(decs))],
                 dec=decs,
                 unit=(units.hourangle, units.deg),
-                frame='icrs'
+                frame="icrs",
             )
 
             for i in range(len(coords)):
                 projtext(
                     coords[i].ra.deg,
                     coords[i].dec.deg,
-                    s=r'${0:+}\degree$'.format(decs[i]),
+                    s=r"${0:+}\degree$".format(decs[i]),
                     lonlat=True,
-                    coord='C',
+                    coord="C",
                     clip_on=True,
-                    color='black',
-                    fontfamily='serif',
-                    fontsize='medium',
-                    horizontalalignment='center',
-                    verticalalignment='bottom',
+                    color="black",
+                    fontfamily="serif",
+                    fontsize="medium",
+                    horizontalalignment="center",
+                    verticalalignment="bottom",
                     snap=True,
-                    zorder=3
+                    zorder=3,
                 )
-        elif coordinates == 'galactic':
+        elif coordinates == "galactic":
             gl = [30, 60, 90, 120, 150, 210, 240, 270, 300, 330]
 
             coords = SkyCoord(
                 l=gl,
                 b=[15.0 for _ in range(len(gl))],
                 unit=(units.deg, units.deg),
-                frame='galactic'
+                frame="galactic",
             )
 
             for i in range(len(coords)):
                 projtext(
                     coords[i].l.deg,
                     coords[i].b.deg,
-                    s=r'${0}\degree$'.format(gl[i]),
+                    s=r"${0}\degree$".format(gl[i]),
                     lonlat=True,
-                    coord='G',
+                    coord="G",
                     clip_on=True,
-                    color='black',
-                    fontfamily='serif',
-                    fontsize='medium',
-                    horizontalalignment='center',
-                    verticalalignment='center',
+                    color="black",
+                    fontfamily="serif",
+                    fontsize="medium",
+                    horizontalalignment="center",
+                    verticalalignment="center",
                     snap=True,
-                    zorder=3
+                    zorder=3,
                 )
 
             gb = [-60, -30, 30, 60]
@@ -591,40 +585,40 @@ class Skymap(object):
                 l=[105.0 for _ in range(len(gb))],
                 b=gb,
                 unit=(units.deg, units.deg),
-                frame='galactic'
+                frame="galactic",
             )
 
             for i in range(len(coords)):
                 projtext(
                     coords[i].l.deg,
                     coords[i].b.deg,
-                    s=r'${0:+}\degree$'.format(gb[i]),
+                    s=r"${0:+}\degree$".format(gb[i]),
                     lonlat=True,
-                    coord='G',
+                    coord="G",
                     clip_on=True,
-                    color='black',
-                    fontfamily='serif',
-                    fontsize='medium',
-                    horizontalalignment='center',
-                    verticalalignment='bottom',
+                    color="black",
+                    fontfamily="serif",
+                    fontsize="medium",
+                    horizontalalignment="center",
+                    verticalalignment="bottom",
                     snap=True,
-                    zorder=3
+                    zorder=3,
                 )
 
         # highlight sources
         if sources is not None:
-            types = np.unique(sources['type'])
-            colors = ['tab:olive', 'tab:blue', 'tab:purple', 'tab:green']
+            types = np.unique(sources["type"])
+            colors = ["tab:olive", "tab:blue", "tab:purple", "tab:green"]
 
             for i, item in enumerate(types):
-                mask = (sources['type'] == item)
+                mask = sources["type"] == item
                 sel = sources[mask]
 
                 coords = SkyCoord(
-                    ra=sel['ra'],
-                    dec=sel['dec'],
+                    ra=sel["ra"],
+                    dec=sel["dec"],
                     unit=(units.hourangle, units.deg),
-                    frame='icrs'
+                    frame="icrs",
                 )
 
                 color = colors[i % len(colors)]
@@ -635,13 +629,13 @@ class Skymap(object):
                     coords.ra.deg,
                     coords.dec.deg,
                     lonlat=True,
-                    coord='C',
-                    marker='*',
+                    coord="C",
+                    marker="*",
                     facecolor=color,
-                    edgecolor='black',
+                    edgecolor="black",
                     lw=0.5,
                     s=50,
-                    zorder=5
+                    zorder=5,
                 )
 
                 # show the source names
@@ -650,30 +644,22 @@ class Skymap(object):
                         projtext(
                             coords[i].ra.deg,
                             coords[i].dec.deg,
-                            s=sel['name'].iloc[i],
+                            s=sel["name"].iloc[i],
                             lonlat=True,
-                            coord='C',
+                            coord="C",
                             clip_on=True,
-                            color='black',
-                            fontfamily='sans-serif',
-                            fontsize='xx-small',
-                            horizontalalignment='left',
-                            verticalalignment='bottom',
+                            color="black",
+                            fontfamily="sans-serif",
+                            fontsize="xx-small",
+                            horizontalalignment="left",
+                            verticalalignment="bottom",
                             snap=True,
-                            zorder=6
+                            zorder=6,
                         )
 
-        fig.savefig(
-            'skymap_{0}.png'.format(coordinates),
-            bbox_inches='tight',
-            dpi=300
-        )
+        fig.savefig("skymap_{0}.png".format(coordinates), bbox_inches="tight", dpi=300)
 
-        fig.savefig(
-            'skymap_{0}.pdf'.format(coordinates),
-            bbox_inches='tight',
-            dpi=300
-        )
+        fig.savefig("skymap_{0}.pdf".format(coordinates), bbox_inches="tight", dpi=300)
 
         plt.draw()
 
@@ -684,13 +670,13 @@ class Skymap(object):
 
         hp.mollzoom(
             self.data,
-            cmap='Reds',
-            coord=['C'],
+            cmap="Reds",
+            coord=["C"],
             norm=LogNorm(),
             rot=(0, 0, 0),
-            title='',
+            title="",
             unit=self.unit,
-            xsize=6400
+            xsize=6400,
         )
 
         hp.graticule()

@@ -13,10 +13,10 @@ class Optimiser(object):
     A sky exposure optimiser.
     """
 
-    name = 'Optimiser'
+    name = "Optimiser"
 
     # available methods
-    __optimisation_methods = ['watershed']
+    __optimisation_methods = ["watershed"]
 
     def __init__(self):
         """
@@ -24,18 +24,16 @@ class Optimiser(object):
         """
 
         self.__skymap = None
-        self.__log = logging.getLogger('meertrapdb.optimiser.optimiser')
+        self.__log = logging.getLogger("meertrapdb.optimiser.optimiser")
 
     def __repr__(self):
         """
         Representation of the object.
         """
 
-        info_dict = {
-            'optimiser': 'XXX'
-        }
+        info_dict = {"optimiser": "XXX"}
 
-        info_str = '{0}'.format(info_dict)
+        info_str = "{0}".format(info_dict)
 
         return info_str
 
@@ -44,7 +42,7 @@ class Optimiser(object):
         String representation of the object.
         """
 
-        info_str = '{0}: {1}'.format(self.name, repr(self))
+        info_str = "{0}: {1}".format(self.name, repr(self))
 
         return info_str
 
@@ -55,7 +53,7 @@ class Optimiser(object):
 
         self.__skymap = copy.deepcopy(skymap)
 
-    def optimise(self, pointing, params, method='watershed'):
+    def optimise(self, pointing, params, method="watershed"):
         """
         Run the sky exposure optimisation.
 
@@ -75,7 +73,9 @@ class Optimiser(object):
         """
 
         if method not in self.__optimisation_methods:
-            raise NotImplementedError('Optimisation method not implemented: {0}'.format(method))
+            raise NotImplementedError(
+                "Optimisation method not implemented: {0}".format(method)
+            )
 
     @property
     def beam_placement(self):
