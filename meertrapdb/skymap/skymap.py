@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 #   2020 Fabian Jankowski
 #   A sky exposure map.
