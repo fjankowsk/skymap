@@ -19,7 +19,7 @@ black:
 clean:
 	rm -f ${SRCDIR}/*.pyc
 	rm -rf ${SRCDIR}/__pycache__
-	rm -rf ${BASEDIR}/tests/__pycache__
+	rm -rf ${BASEDIR}/*/__pycache__
 	rm -rf ${BASEDIR}/build
 	rm -rf ${BASEDIR}/dist
 	rm -rf ${BASEDIR}/skymap.egg-info
