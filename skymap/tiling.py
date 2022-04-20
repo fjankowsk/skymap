@@ -18,7 +18,7 @@ class Tiling(object):
         A multi-beam tiling.
         """
 
-        self.__log = logging.getLogger("meertrapdb.skymap.tiling")
+        self.__log = logging.getLogger("skymap.tiling")
         self.__beams = []
 
     def __repr__(self):

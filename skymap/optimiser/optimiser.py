@@ -23,7 +23,7 @@ class Optimiser(object):
         """
 
         self.__skymap = None
-        self.__log = logging.getLogger("meertrapdb.optimiser.optimiser")
+        self.__log = logging.getLogger("skymap.optimiser.optimiser")
 
     def __repr__(self):
         """

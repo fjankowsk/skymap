@@ -49,7 +49,7 @@ class Skymap(object):
         self.__coordinate = "icrs"
         self.__dtype = np.float32
         self.__exposures = 0
-        self.__log = logging.getLogger("meertrapdb.skymap.skymap")
+        self.__log = logging.getLogger("skymap.skymap")
         self.__nside = nside
         self.__npix = hp.nside2npix(self.__nside)
         self.__quantity = quantity
