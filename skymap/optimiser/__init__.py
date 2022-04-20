@@ -1,1 +1,1 @@
-from meertrapdb.optimiser.optimiser import Optimiser
+from skymap.optimiser.optimiser import Optimiser

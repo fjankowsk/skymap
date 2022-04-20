@@ -657,7 +657,6 @@ class Skymap(object):
                         )
 
         fig.savefig("skymap_{0}.png".format(coordinates), bbox_inches="tight", dpi=300)
-
         fig.savefig("skymap_{0}.pdf".format(coordinates), bbox_inches="tight", dpi=300)
 
         plt.draw()
