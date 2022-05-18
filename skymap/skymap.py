@@ -54,6 +54,8 @@ class Skymap(object):
         self.__npix = hp.nside2npix(self.__nside)
         self.__quantity = quantity
         self.__unit = unit
+        # number of pixels in the plots in horizontal direction
+        self.__xsize = 10240
 
         # create empty map
         # self.__data = np.full(self.__npix, hp.UNSEEN, dtype=self.__dtype)
@@ -396,6 +398,11 @@ class Skymap(object):
 
             mask = hp.query_disc(nside=self.nside, vec=vec, radius=np.radians(radius))
 
+            if len(mask) == 0:
+                raise RuntimeError(
+                    "No HEAL pixels selected. Adjust the map resolution."
+                )
+
             self.__log.debug("Number of HEAL pixels: {0}".format(len(mask)))
 
             self.__data[mask] = self.data[mask] + length
@@ -430,6 +437,9 @@ class Skymap(object):
             vec = hp.ang2vec(dec_rad, ra_rad)
 
             mask = hp.query_disc(nside=self.nside, vec=vec, radius=np.radians(radius))
+
+            if len(mask) == 0:
+                raise RuntimeError("No HEAL pixels selected. Adjust the query radius.")
 
             self.__log.debug("Number of HEAL pixels: {0}".format(len(mask)))
 
@@ -493,7 +503,7 @@ class Skymap(object):
             rot=rot,
             title="",
             unit=self.unit,
-            xsize=6400,
+            xsize=self.__xsize,
         )
 
         hp.graticule()
@@ -674,7 +684,7 @@ class Skymap(object):
             rot=(0, 0, 0),
             title="",
             unit=self.unit,
-            xsize=6400,
+            xsize=self.__xsize,
         )
 
         hp.graticule()

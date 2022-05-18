@@ -244,6 +244,27 @@ def test_save_comments():
         os.remove(filename)
 
 
+def test_low_map_resolution():
+    nside = 2**5
+    quantity = "time"
+    unit = "min"
+
+    m = Skymap(nside=nside, quantity=quantity, unit=unit)
+
+    coords = SkyCoord(
+        ra=["04:37:15.8961737", "05:34:31.973", "08:35:20.61149", "16:44:49.273"],
+        dec=["-47:15:09.110714", "+22:00:52.06", "-45:10:34.8751", "-45:59:09.71"],
+        unit=(u.hour, u.deg),
+        frame="icrs",
+    )
+
+    radius = np.full(len(coords), 0.0058)
+    length = np.full(len(coords), 10.0)
+
+    with assert_raises(RuntimeError):
+        m.add_exposure(coords, radius, length)
+
+
 if __name__ == "__main__":
     import nose2
 
