@@ -676,8 +676,12 @@ class Skymap(object):
         Interactively visualise the Skymap exposure data.
         """
 
+        # mask all empty areas
+        masked = np.copy(self.data)
+        masked[masked < 0.01] = np.nan
+
         hp.mollzoom(
-            self.data,
+            masked,
             cmap="Reds",
             coord=["C"],
             norm=LogNorm(),
