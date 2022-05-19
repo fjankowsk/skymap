@@ -7,7 +7,6 @@ import argparse
 
 import astropy.units as units
 from astropy.coordinates import SkyCoord
-import matplotlib.pyplot as plt
 
 from skymap import Skymap
 
@@ -66,10 +65,7 @@ def main():
     )
 
     exposure = m.query(coords, [0.1 for _ in range(len(coords))])
-    print(exposure)
-
-    m.show()
-    plt.show()
+    print("{0}".format(exposure, m.unit))
 
 
 if __name__ == "__main__":
