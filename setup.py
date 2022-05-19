@@ -38,6 +38,11 @@ setup(
         "matplotlib",
         "numpy",
     ],
+    entry_points={
+        "console_scripts": [
+            "skymap-query = skymap.apps.query_skymap:main",
+        ],
+    },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
