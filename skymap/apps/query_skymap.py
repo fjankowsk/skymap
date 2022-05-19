@@ -65,7 +65,7 @@ def main():
     )
 
     exposure = m.query(coords, [0.1 for _ in range(len(coords))])
-    print("{0}".format(exposure, m.unit))
+    print("{0} {1}".format(exposure, m.unit))
 
 
 if __name__ == "__main__":
