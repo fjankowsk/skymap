@@ -32,12 +32,7 @@ setup(
     url="https://bitbucket.org/jankowsk/skymap",
     license="MIT",
     packages=find_packages(),
-    install_requires=[
-        "astropy",
-        "healpy",
-        "matplotlib",
-        "numpy",
-    ],
+    install_requires=["astropy", "healpy", "matplotlib", "numpy", "pandas"],
     entry_points={
         "console_scripts": [
             "skymap-query = skymap.apps.query_skymap:main",

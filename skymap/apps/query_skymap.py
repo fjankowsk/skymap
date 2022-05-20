@@ -7,6 +7,8 @@ import argparse
 
 import astropy.units as units
 from astropy.coordinates import SkyCoord
+import matplotlib.pyplot as plt
+import pandas as pd
 
 from skymap import Skymap
 
@@ -42,6 +44,15 @@ def parse_args():
         help="The declination of the coordinate to query.",
     )
 
+    parser.add_argument(
+        "-p",
+        "--plot",
+        dest="plot",
+        action="store_true",
+        default=False,
+        help="Plot the coordinate on the sky map.",
+    )
+
     args = parser.parse_args()
 
     return args
@@ -66,6 +77,14 @@ def main():
 
     exposure = m.query(coords, [0.1 for _ in range(len(coords))])
     print("{0} {1}".format(exposure, m.unit))
+
+    df_sources = pd.DataFrame(
+        {"ra": [args.ra], "dec": [args.dec], "name": [""], "type": [""]}
+    )
+
+    if args.plot:
+        m.show(coordinates="galactic", sources=df_sources, shownames=False)
+        plt.show()
 
 
 if __name__ == "__main__":
