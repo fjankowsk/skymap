@@ -83,7 +83,7 @@ def main():
     )
 
     if args.plot:
-        m.show(coordinates="galactic", sources=df_sources, shownames=False)
+        m.show(coordinates="galactic", sources=df_sources)
         plt.show()
 
 

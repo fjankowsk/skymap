@@ -455,7 +455,7 @@ class Skymap(object):
 
         return exposures
 
-    def show(self, coordinates="equatorial", sources=None, shownames=False):
+    def show(self, coordinates="equatorial", sources=None, params={}):
         """
         Visualise the Skymap exposure data and sources.
 
@@ -465,8 +465,14 @@ class Skymap(object):
             The coordinate system to use (equatorial, galactic).
         sources: pandas.DataFrame
             Source positions to overplot (default: None).
-        shownames: bool (default: False)
-            Whether to show the names of the sources on the sky map.
+        params: dict
+            Parameters that influence the layout of the sky map.
+            shownames: bool (default: False)
+                Whether to show the names of the sources on the sky map.
+            fontsize: float
+                The fontsize of the source name labels.
+            markersize: float
+                The size of the source markers.
 
         Raises
         ------
@@ -632,6 +638,11 @@ class Skymap(object):
 
                 color = colors[i % len(colors)]
 
+                if "markersize" in params:
+                    markersize = params["markersize"]
+                else:
+                    markersize = 50
+
                 # no need to convert the coordinates manually
                 # healpy does that for us automatically
                 projscatter(
@@ -643,12 +654,17 @@ class Skymap(object):
                     facecolor=color,
                     edgecolor="black",
                     lw=0.5,
-                    s=50,
+                    s=markersize,
                     zorder=5,
                 )
 
                 # show the source names
-                if shownames:
+                if "shownames" in params and params["shownames"]:
+                    if "fontsize" in params:
+                        fontsize = params["fontsize"]
+                    else:
+                        fontsize = "xx-small"
+
                     for i in range(len(sel)):
                         projtext(
                             coords[i].ra.deg,
@@ -659,7 +675,7 @@ class Skymap(object):
                             clip_on=True,
                             color="black",
                             fontfamily="sans-serif",
-                            fontsize="xx-small",
+                            fontsize=fontsize,
                             horizontalalignment="left",
                             verticalalignment="bottom",
                             snap=True,
