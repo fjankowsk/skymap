@@ -491,7 +491,7 @@ class Skymap(object):
 
         # mask all empty areas
         masked = np.copy(self.data)
-        masked[masked < 0.01] = np.nan
+        masked[masked < 0.001] = np.nan
 
         cmap = copy.copy(plt.get_cmap("Reds"))
         cmap.set_under("white")
@@ -505,7 +505,9 @@ class Skymap(object):
             cmap=cmap,
             coord=coord,
             fig=fig.number,
+            format="%.0f",
             norm=LogNorm(vmin=np.nanmin(masked), vmax=np.nanmax(masked)),
+            notext=True,
             rot=rot,
             title="",
             unit=self.unit,
@@ -694,13 +696,13 @@ class Skymap(object):
 
         # mask all empty areas
         masked = np.copy(self.data)
-        masked[masked < 0.01] = np.nan
+        masked[masked < 0.001] = np.nan
 
         hp.mollzoom(
             masked,
             cmap="Reds",
             coord=["C"],
-            norm=LogNorm(),
+            norm=LogNorm(vmin=np.nanmin(masked), vmax=np.nanmax(masked)),
             rot=(0, 0, 0),
             title="",
             unit=self.unit,
