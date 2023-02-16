@@ -29,7 +29,7 @@ setup(
     description="Create and visualise sky map data.",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
-    url="https://bitbucket.org/jankowsk/skymap",
+    url="https://github.com/fjankowsk/skymap",
     license="MIT",
     packages=find_packages(),
     install_requires=["astropy", "healpy", "matplotlib", "numpy", "pandas"],
