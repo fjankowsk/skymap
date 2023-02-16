@@ -1,6 +1,6 @@
 BLK         =   black
 NOSE        =   nose2
-PIP         =   pip
+PIP         =   pip3
 
 BASEDIR     =   $(CURDIR)
 SRCDIR      =   ${BASEDIR}/skymap
