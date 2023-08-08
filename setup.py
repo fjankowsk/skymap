@@ -38,6 +38,9 @@ setup(
             "skymap-query = skymap.apps.query_skymap:main",
         ],
     },
+    extras_require={
+        "develop": ["black", "pytest", "pytest-cov"],
+    },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",

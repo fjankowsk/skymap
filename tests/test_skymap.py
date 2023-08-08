@@ -3,6 +3,7 @@
 #
 
 import os
+import pytest
 
 from astropy.coordinates import SkyCoord
 from astropy import units as u
@@ -266,6 +267,4 @@ def test_low_map_resolution():
 
 
 if __name__ == "__main__":
-    import nose2
-
-    nose2.main()
+    pytest.main([__file__])

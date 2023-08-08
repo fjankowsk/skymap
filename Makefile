@@ -1,5 +1,4 @@
 BLK         =   black
-NOSE        =   nose2
 PIP         =   pip3
 
 BASEDIR     =   $(CURDIR)
@@ -11,7 +10,8 @@ help:
 	@echo 'make black           reformat the code using black code formatter'
 	@echo 'make clean           remove temporary files'
 	@echo 'make install         install the package locally'
-	@echo 'make tests           run the unit tests'
+	@echo 'make test            run the non-interactive regression tests'
+	@echo 'make testall         run all regression tests'
 
 black:
 	${BLK} *.py */*.py */*/*.py
@@ -27,7 +27,10 @@ clean:
 install:
 	${PIP} install .
 
-tests:
-	${NOSE}
+test:
+	pytest --verbose -m 'not interactive'
 
-.PHONY: help black clean install tests
+testall:
+	pytest --verbose -s
+
+.PHONY: help black clean install test testall

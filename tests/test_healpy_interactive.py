@@ -3,6 +3,8 @@
 #   2020 Fabian Jankowski
 #
 
+import pytest
+
 from astropy.coordinates import SkyCoord
 from astropy import units as u
 import matplotlib.pyplot as plt
@@ -14,6 +16,7 @@ import healpy as hp
 # pylint: disable=E1101
 
 
+@pytest.mark.interactive
 def test_healpy_functionality():
     print("{0:<6} {1:>10} {2:>12} {3:>12}".format("Expon", "Nside", "Res", "Npix"))
     print("{0:<6} {1:>10} {2:>12} {3:>12}".format("", "", "(arcsec)", "(Gpix)"))
@@ -108,6 +111,4 @@ def test_healpy_functionality():
 
 
 if __name__ == "__main__":
-    import nose2
-
-    nose2.main()
+    pytest.main([__file__])
