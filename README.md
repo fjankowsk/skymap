@@ -4,7 +4,7 @@ This repository contains software tools to create and visualise sky map data, pr
 
 ## Author ##
 
-The software is primarily developed and maintained by Fabian Jankowski. For more information feel free to contact me via: fabian.jankowski at manchester.ac.uk.
+The software is primarily developed and maintained by Fabian Jankowski. For more information feel free to contact me via: fabian.jankowski at cnrs-orleans.fr.
 
 ## Citation ##
 
@@ -14,6 +14,6 @@ If you make use of the software, please add a link to this repository and cite o
 
 The easiest and recommended way to install the software is through `pip` directly from its GitHub repository. For example, to install the master branch of the code, use the following command:
 
-`pip3 install git+https://github.com/fjankowsk/skymap.git@master`
+`pip install git+https://github.com/fjankowsk/skymap.git@master`
 
 This will automatically install all dependencies.
