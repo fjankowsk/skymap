@@ -1,6 +1,7 @@
 # skymap: Create and visualise sky map data #
 
 [![GitHub issues](https://img.shields.io/badge/issue_tracking-GitHub-blue.svg)](https://github.com/fjankowsk/skymap/issues/)
+[![License - MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/fjankowsk/skymap/blob/master/LICENSE)
 [![Paper link](https://img.shields.io/badge/paper-10.1093/mnras/stad2041-blue.svg)](https://doi.org/10.1093/mnras/stad2041)
 [![arXiv link](https://img.shields.io/badge/arXiv-2302.10107-blue.svg)](https://arxiv.org/abs/2302.10107)
 
