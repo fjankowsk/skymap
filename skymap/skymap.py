@@ -121,6 +121,40 @@ class Skymap(object):
 
         return loaded
 
+    @classmethod
+    def load_from_fits(cls, filename):
+        """
+        Load Skymap from FITS file.
+
+        Parameters
+        ----------
+        filename: str
+            The name of the file.
+
+        Returns
+        -------
+        loaded: ~Skymap
+            The loaded Skymap object.
+
+        Raises
+        ------
+        RuntimeError
+            If the file does not exist.
+        """
+
+        if not os.path.isfile(filename):
+            raise RuntimeError("The file does not exist: {0}".format(filename))
+
+        data = hp.read_map(filename=filename)
+
+        # figure out parameters
+        nside = hp.npix2nside(len(data))
+
+        loaded = Skymap(nside=nside, quantity="", unit="")
+        loaded.__data = data.astype(np.float32)
+
+        return loaded
+
     def save_to_file(self, filename):
         """
         Save Skymap to file.

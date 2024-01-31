@@ -75,7 +75,7 @@ def test_healpy_functionality():
         mask = hp.query_disc(
             nside=NSIDE,
             vec=vec,
-            radius=np.radians(0.58)
+            radius=np.radians(0.58),
             # radius=np.radians(0.5 * 12 / 60.0)
         )
 
